@@ -96,7 +96,44 @@ public class RestApiController {
             return "error in /quote";
         }
     }
+    
+    
+    
+    /**
+     * Get a cat fact from meowfacts and make it available at this endpoint.
+     * Most of the code in this block is from Sunny's code block directly above.
+     *
+     * @return The fact json response
+     */
+    @GetMapping("/meow")
+    public Object getMeow() {
+        try {
+            String url = "https://meowfacts.herokuapp.com/";
+            RestTemplate restTemplate = new RestTemplate();
+            ObjectMapper mapper = new ObjectMapper();
 
+            String jSonFact = restTemplate.getForObject(url, String.class);
+            JsonNode root = mapper.readTree(jSonFact);
+
+            //Print the whole response to console.
+            System.out.println(root);
+
+            //Parse out the most important info from the response.
+            JsonNode catData = root.get("data");
+            String catString = catData.toString();
+            catString = catString.substring(2,catString.length()-2);
+            System.out.println("Cat Fact: " + catString);
+
+            return root;
+
+        } catch (JsonProcessingException ex) {
+            Logger.getLogger(RestApiController.class.getName()).log(Level.SEVERE, null, ex);
+            return "error in /meow";
+        }
+    }
+    
+    
+    
     /**
      * Get a list of universities from hipolabs and make them available at this
      * endpoint.
